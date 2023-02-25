@@ -53,7 +53,7 @@ namespace WebAPI
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowOrigin",
-                    builder=>builder.WithOrigins("http://localhost:3000" ,"http://localhost:4200")); //Ýstek Yapýlan yer =origin
+                    builder=>builder.WithOrigins("http://localhost:4200")); //Ýstek Yapýlan yer =origin
             });
 
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
@@ -90,8 +90,10 @@ namespace WebAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(builder => builder.WithOrigins("http://localhost:3000","http://localhost:4200").AllowAnyHeader());
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyHeader());
             app.UseHttpsRedirection();
+            
+            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -101,10 +103,13 @@ namespace WebAPI
 
             app.UseAuthorization();  //Anahtarýn açabilceði yerleri belirleme
 
+            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+            
         }
     }
 }

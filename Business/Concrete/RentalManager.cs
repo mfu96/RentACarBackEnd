@@ -20,6 +20,7 @@ namespace Business.Concrete
 
     {
         IRentalDal _rentalDal;
+
         public RentalManager(IRentalDal rentalDal)
         {
             _rentalDal = rentalDal;
@@ -27,24 +28,43 @@ namespace Business.Concrete
         }
         //[SecuredOperation("admin,employer,editor")]
         [CacheAspect]
-        public IDataResult<Rental> GetById(int rentalId)
+        public IDataResult<Rental> GetById(int rentId)
         {
-            return new SuccessDataResult<Rental>(_rentalDal.Get(p => p.CarId == rentalId),
+            return new SuccessDataResult<Rental>(_rentalDal.Get(p => p.RentId == rentId),
                 MessagesGet.RentalDetailListed);
+        }
+
+        public IDataResult<Rental> GetLastRentalByCarId(int carId)
+        {
+            return new SuccessDataResult<Rental>(_rentalDal.GetAll().Where(rn => rn.CarId == carId).LastOrDefault());
+
         }
 
         //[SecuredOperation("admin,employer,editor")]
         [CacheAspect]
-        public IDataResult<List<RentalDetailDto>> GetRentalDetails()
+        public IDataResult<List<RentalDetailDto>> GetRentalDetails(int rentId)
         {
-            return new SuccessDataResult<List<RentalDetailDto>>(_rentalDal.GetRentalDetails(),
-                MessagesGet.RentalsDetailListed);
+            if (rentId == 0)
+            {
+                return new SuccessDataResult<List<RentalDetailDto>>(_rentalDal.GetRentalDetails(),
+               MessagesGet.RentalsDetailListed);
+            }
+            else
+            {
+                return new SuccessDataResult<List<RentalDetailDto>>(_rentalDal.GetRentalDetails(rn => rn.RentId == rentId), MessagesGet.RentalDetailListed);
+
+            }
+
         }
+
+
 
         [ValidationAspect(typeof(RentalValidator))]
         // [SecuredOperation("admin,editor")]
         [CacheRemoveAspect("IRentalService.Get")]
         //[TransactionScopeAspect]
+
+
 
         public IResult AddRent(Rental rental)
         {
@@ -56,14 +76,14 @@ namespace Business.Concrete
             }
 
 
-            //rental.RentDate = DateTime.Now;
+            // rental.RentDate = DateTime.Now;
 
             _rentalDal.Add(rental);
             return new SuccessResult(MessagesAdd.RentSuccessful);
 
 
         }
-        public IResult CheckReturnDate(Rental rental)
+        private IResult CheckReturnDate(Rental rental)
         {
 
             //Bu OLMAZZZ
@@ -81,16 +101,16 @@ namespace Business.Concrete
 
 
 
-            var result =
-                _rentalDal.Get(r => (r.CarId == rental.CarId && r.ReturnDate == null)
-                                    || (r.RentDate >= rental.RentDate && r.ReturnDate >= rental.RentDate));
+            //var result =
+            //    _rentalDal.GetRentalDetails(r => (r.CarId == rental.CarId && r.ReturnDate == null)
+            //                        || (r.RentDate >= rental.RentDate && r.ReturnDate >= rental.RentDate));
 
-            if (result != null)
-            {
-                return new ErrorResult(MessagesAdd.AlreadyRented);
-            }
+            //if (result != null)
+            //{
+            //    return new ErrorResult(MessagesAdd.AlreadyRented);
+            //}
+            //return new SuccessResult();
 
-            return new SuccessResult();
 
             //var resultList = _rentalDal.GetAll(r => r.CarId == rental.CarId).ToList();
             //if (resultList.Count == 0)
@@ -109,23 +129,24 @@ namespace Business.Concrete
 
 
 
-            //var overlappingDateList = _rentalDal.GetRentalDetails(r => r.CarId == rental.CarId
-            //                                                           && r.RentDate < rental.ReturnDate
-            //                                                           && r.ReturnDate > rental.RentDate);
+            var overlappingDateList = _rentalDal.GetAll(r => r.CarId == rental.CarId
+                                                                       && r.RentDate < rental.ReturnDate
+                                                                       && r.ReturnDate > rental.RentDate);
 
-            //if (overlappingDateList == null)
-            //{
-            //    return new SuccessResult(MessagesAdd.RentSuccessful);
-            //}
-
-            //return new ErrorResult(MessagesAdd.AlreadyRented);
+            if (overlappingDateList.Count() == 0)
+            {
+                return new SuccessResult();
+            }
+            else
+            {
+                return new ErrorResult(MessagesAdd.AlreadyRented);
+            }
 
 
             //var overlappingDateList =
             //    _rentalDal.GetAll(r =>
             //        (r.CarId == rental.CarId &&
-            //         (r.ReturnDate == null
-            //          || r.RentDate < DateTime.Now))).Any();
+            //         (r.ReturnDate == null || r.RentDate < DateTime.Now))).Any();
             //if (overlappingDateList)
             //{
             //    return new ErrorResult(MessagesAdd.AlreadyRented);
@@ -154,6 +175,8 @@ namespace Business.Concrete
             _rentalDal.Delete(rental);
             return new SuccessResult(MessagesDelete.RentDeleted);
         }
+
+
 
 
         // [SecuredOperation("admin,employer,editor")]

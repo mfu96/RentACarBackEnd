@@ -24,8 +24,7 @@ namespace WebAPI.Controllers
 
         [HttpGet("getall")]
 
-        public IActionResult GetAll()
-        {
+        public IActionResult GetAll()        {
             var result = _userService.GetAll();
             if (result.Success)
             {

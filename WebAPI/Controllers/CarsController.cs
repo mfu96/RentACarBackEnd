@@ -80,16 +80,6 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getbyimage")]
-        public IActionResult GetByImageId(int imageId)
-        {
-            var result = _carService.GetByImageId(imageId);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
 
 
         [HttpGet("getdetails")]

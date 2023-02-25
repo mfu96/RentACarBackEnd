@@ -44,14 +44,14 @@ namespace Business.Concrete
         }
        
        [CacheAspect]
-       [SecuredOperation("admin,editor,employer")]
+      // [SecuredOperation("admin,editor,employer")]
         public IDataResult<Car> GetById(int carId)
         {
             return new SuccessDataResult<Car>(_carDal.Get(p => p.CarId == carId),MessagesGet.CarListed);
         }
         [CacheRemoveAspect("ICarService.Get")]   //Açıklama için MyFinalProject.Business.Conrete.ProductManager.Update
         [ValidationAspect(typeof(CarValidator))]
-        [SecuredOperation("admin,editor")]   //Burda seçili controller için yetki/authorization ayarlaması yapıyorum
+      //  [SecuredOperation("admin,editor")]   //Burda seçili controller için yetki/authorization ayarlaması yapıyorum
                                                  //ve bunlar key olacağı için hep küçük harf kullanıyorum
        // [TransactionScopeAspect]
 
@@ -68,7 +68,7 @@ namespace Business.Concrete
         }
         [CacheRemoveAspect("ICarService.Get")]   //Açıklama için MyFinalProject.Business.Conrete.ProductManager.Update
         [ValidationAspect(typeof(CarValidator))]
-        [SecuredOperation("admin,editor")]
+        //[SecuredOperation("admin,editor")]
        // [TransactionScopeAspect]
 
         public IResult UpdateCar(Car car) 
@@ -99,10 +99,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetByCarDetailId(carId));
         }
 
-        public IDataResult<List<Car>> GetByImageId(int imageId)
-        {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(p => p.ImageId == imageId));
-        }
+     
 
         // [SecuredOperation("admin,editor,employer")]
         public IDataResult<List<CarDetailDto>> GetCarDetails()

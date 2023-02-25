@@ -27,7 +27,7 @@ namespace Business.Concrete
         {
             _userDal = userDal;
         }
-        [SecuredOperation("admin,employer")]
+       // [SecuredOperation("admin,employer")]
         public IDataResult<List<User>> GetAll()
         {
             return new SuccessDataResult<List<User>>(_userDal.GetAll(), MessagesGet.UsersListed);
@@ -35,7 +35,7 @@ namespace Business.Concrete
 
         
         [ValidationAspect(typeof(UserValidator))]
-        [SecuredOperation("admin,editor")]
+      //  [SecuredOperation("admin,editor")]   //Burası registerden gelen müşteriler için engel oluşturoyor
         //[TransactionScopeAspect]
         public IResult AddUser(User user)
         {
@@ -54,13 +54,13 @@ namespace Business.Concrete
             _userDal.Update(user);
             return new SuccessResult(MessagesUpdate.UserUpdated);
         }
-        [SecuredOperation("admin,editor")]
+       // [SecuredOperation("admin,editor")]
         public IResult DeleteUser(User user)
         {
             _userDal.Delete(user);
             return new SuccessResult(MessagesDelete.UserDeleted);
         }
-        [SecuredOperation("admin,editor,employer")]
+        // [SecuredOperation("admin,editor,employer")]    //Burası registerden gelen müşteriler için engel oluşturoyor
         [CacheAspect]
         public IDataResult<User> GetByMail(string email)
         {

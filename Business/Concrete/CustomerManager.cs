@@ -47,7 +47,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<CustomerDetailDto>>(_customerDal.GetCustomerDetail(),MessagesGet.CustomerDetailListed);
         }
         [ValidationAspect(typeof(CustomerValidator))]
-        [SecuredOperation("admin,editor")]
+        // [SecuredOperation("admin,editor")]     //Burası registerden gelen müşteriler için engel oluşturoyor
         [CacheRemoveAspect("ICustomerService.Get")]
       //  [TransactionScopeAspect]
 

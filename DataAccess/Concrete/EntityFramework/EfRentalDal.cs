@@ -13,11 +13,11 @@ namespace DataAccess.Concrete.EntityFramework
     
     public class EfRentalDal:EfEntityRepositoryBase<Rental,RentACarContext>,IRentalDal
     {
-        public List<RentalDetailDto> GetRentalDetails()
+        public List<RentalDetailDto> GetRentalDetails(Expression<Func<Rental, bool>> filter = null)
         {
             using (RentACarContext context =new RentACarContext())
             {
-                var result = from rn in context.Rentals
+                var result = from rn in filter == null ? context.Rentals: context.Rentals.Where(filter)
                     join cos in context.Customers on rn.CustomerId equals cos.CustomerId
                     join cr in context.Cars on rn.CarId equals cr.CarId
 
