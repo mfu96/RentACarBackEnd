@@ -45,5 +45,9 @@
 
         public static string CarImageOverloading = "Ürüne 5'ten fazla resim eklenemez";
 
+
+
+        public static string CardExist = "Kaydetmeye çalıştığınız kart zaten ekli";
+        public static string CardAdded = "Kart başarı ile kaydedildi";
     }
 }

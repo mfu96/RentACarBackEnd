@@ -150,39 +150,39 @@ namespace ConsoleUI
 
 
 
-        private static CarManager CarDetailTest()
-        {
-            CarManager carManager = new CarManager(new EfCarDal());
-            carManager.AddCar(new Car { BrandId = 1, ColorId = 3, CategoryId = 3, CarName = "Opel", UnitPrice = 350, Description = "Afilli mi acep?", ModelYear = 2021 });
-            carManager.AddCar(new Car { BrandId = 7, ColorId = 9, CategoryId = 9, CarName = "Mercedes", UnitPrice = 350, Description = "Afilli", ModelYear = 2021 });
-            carManager.AddCar(new Car { BrandId = 1, ColorId = 3, CategoryId = 3, CarName = "Renault", UnitPrice = 150, Description = "Tam Şirket arabası", ModelYear = 2020 });
-            carManager.AddCar(new Car { BrandId = 5, ColorId = 3, CategoryId = 5, CarName = "Tata", UnitPrice = 150, Description = "Tam Şirket arabası", ModelYear = 2020 });
+        //private static CarManager CarDetailTest()
+        //{
+        //    CarManager carManager = new CarManager(new EfCarDal());
+        //    carManager.AddCar(new Car { BrandId = 1, ColorId = 3, CategoryId = 3, CarName = "Opel", UnitPrice = 350, Description = "Afilli mi acep?", ModelYear = 2021 });
+        //    carManager.AddCar(new Car { BrandId = 7, ColorId = 9, CategoryId = 9, CarName = "Mercedes", UnitPrice = 350, Description = "Afilli", ModelYear = 2021 });
+        //    carManager.AddCar(new Car { BrandId = 1, ColorId = 3, CategoryId = 3, CarName = "Renault", UnitPrice = 150, Description = "Tam Şirket arabası", ModelYear = 2020 });
+        //    carManager.AddCar(new Car { BrandId = 5, ColorId = 3, CategoryId = 5, CarName = "Tata", UnitPrice = 150, Description = "Tam Şirket arabası", ModelYear = 2020 });
 
-            ////carManager.DeleteCar(new Car { Id = 2 });
+        //    ////carManager.DeleteCar(new Car { Id = 2 });
 
-            //Console.WriteLine("--Araç ismi--");
+        //    //Console.WriteLine("--Araç ismi--");
 
-            var resultCar = carManager.GetCarDetails();
+        //    var resultCar = carManager.GetCarDetails();
 
-            if (resultCar.Success == true)
-            {
-                foreach (var car in resultCar.Data)
-                {
-                    Console.WriteLine(car.CarName + "---" + car.ColorName + "---" + car.BrandName);
-                }
-            }
-            else
-            {
-                Console.WriteLine(resultCar.Message);
-            }
-
-
-            return carManager;
+        //    if (resultCar.Success == true)
+        //    {
+        //        foreach (var car in resultCar.Data)
+        //        {
+        //            Console.WriteLine(car.CarName + "---" + car.ColorName + "---" + car.BrandName);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine(resultCar.Message);
+        //    }
 
 
+        //    return carManager;
 
 
-        }
+
+
+        //}
 
         private static void CategoryTest()
         {

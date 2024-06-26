@@ -17,7 +17,7 @@ namespace Business.Abstract
         IResult AddRent(Rental rental);
         IResult UpdateRent(Rental rental);
         IResult DeleteRent(Rental rental);
-        //IResult CheckReturnDate(Rental rental);
+        //IResult Check(Rental rental);
 
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Business.Abstract;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
@@ -15,11 +16,13 @@ namespace WebAPI.Controllers
 
     public class CarsController : ControllerBase
     {
-        ICarService _carService;
+        ICarService _carService; 
+        IPaymentService _paymentService;
 
-        public CarsController(ICarService carService)
+        public CarsController(ICarService carService, IPaymentService paymentService)
         {
             _carService = carService;
+            _paymentService = paymentService;
         }
 
         [HttpGet("getall")]
@@ -59,9 +62,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getbybrand")]
-        public IActionResult GetByBrandId(int brandId)
+        public IActionResult GetByBrandId([FromQuery] string brandId)
         {
             var result = _carService.GetByBrandId(brandId);
+
             if (result.Success)
             {
                 return Ok(result);
@@ -80,12 +84,27 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet("getcarsbybrandandcolor")]
+        public IActionResult GetCarsByBrandAndColor(int brandId, int colorId)
+        {
+            var result = _carService.GetCarsByBrandAndColor(brandId, colorId);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
+
 
 
         [HttpGet("getdetails")]
-        public IActionResult GetCarDetails( )
+        public IActionResult GetCarDetails(int carId)
         {
-            var result = _carService.GetCarDetails();
+            var result = _carService.GetCarDetails(carId);
             if (result.Success)
             {
                 return Ok(result);
@@ -111,13 +130,31 @@ namespace WebAPI.Controllers
         [HttpPost("add")]
         public IActionResult Add(Car car)
         {
-            var result = _carService.AddCar(car);
+             
+             int currentUserId = GetCurrentUserId();  // Mevcut kullanıcı kimliğini al
+            var result = _carService.AddCar(currentUserId, car);
             if (result.Success)
             {
                 return Ok(result);
             }
 
             return BadRequest(result);
+        }
+
+        private int GetCurrentUserId()
+        {
+            // Mevcut kullanıcı kimliğini HttpContext üzerinden al
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                
+
+            // Kullanıcı kimliğini integer olarak dönüştür (örneğin)
+            if (int.TryParse(userId, out int result))
+            {
+                return result;
+            }
+
+            // Dönüştürme başarısız olursa, varsayılan değer olarak -1 dön
+            return -1;
         }
         [HttpPost("update")]
         public IActionResult Update(Car car)
@@ -134,6 +171,18 @@ namespace WebAPI.Controllers
         public IActionResult Delete(Car car)
         {
             var result = _carService.DeleteCar(car);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+
+        [HttpPost("payment")]
+        public IActionResult Payment(Payment amount)
+        {
+            var result = _paymentService.MakePayment(amount);
             if (result.Success)
             {
                 return Ok(result);

@@ -34,7 +34,7 @@ namespace Business.Concrete
            
            return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(),MessagesGet.CustomersListed);
        }
-        [SecuredOperation("admin,editor,employer")]
+        //[SecuredOperation("admin,editor,employer")]
         [CacheAspect]
         public IDataResult<Customer> GetById(int customerId)
         {
@@ -67,7 +67,7 @@ namespace Business.Concrete
             _customerDal.Update(customer);
             return new SuccessResult(MessagesUpdate.CustomerUpdate);
         }
-        [SecuredOperation("admin,editor")]
+      //[SecuredOperation("admin,editor")]
         [CacheRemoveAspect("ICustomerService.Get")]
         public IResult DeleteCustomer(Customer customer)
         {

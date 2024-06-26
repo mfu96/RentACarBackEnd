@@ -106,18 +106,8 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        //[HttpGet("check")]
-        //public IActionResult CheckRent(int carId)
-        //{
-        //    var result = _rentalService.CheckReturnDate(carId);
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
 
-        //    }
 
-        //    return BadRequest(result);
-        //}
 
     }
 }

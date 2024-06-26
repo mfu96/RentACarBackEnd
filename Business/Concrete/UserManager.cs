@@ -71,5 +71,11 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user), MessagesGet.ClaimsListed);
         }
+        // [SecuredOperation("admin,editor,employer")]
+        public IDataResult<List<OperationClaim>> GetClaimsAll()
+        {
+
+            return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaimsAll(),MessagesGet.ClaimsListed);
+        }
     }
 }

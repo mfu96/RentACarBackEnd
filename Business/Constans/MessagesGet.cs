@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Entities.Concrete;
+using Entities.DTOs;
 
 namespace Business.Constants
 {
@@ -56,5 +57,6 @@ namespace Business.Constants
 
 
         public static string ClaimsListed = "Kullnıcı rolleri listelendi";
+        public static string CarNotFound = "Araç bulunamadı";
     }
 }

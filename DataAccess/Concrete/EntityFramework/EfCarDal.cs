@@ -14,7 +14,7 @@ namespace DataAccess.Concrete.EntityFramework
 {
     public class EfCarDal : EfEntityRepositoryBase<Car, RentACarContext>, ICarDal
     {
-        public List<CarDetailDto> GetCarDetails()
+        public List<CarDetailDto> GetCarDetails(Expression<Func<CarDetailDto, bool>> filter = null)
         {
             using (RentACarContext context = new RentACarContext())
             {
@@ -29,11 +29,14 @@ namespace DataAccess.Concrete.EntityFramework
                                 on p.ColorId equals cl.ColorId
                              join b in context.Brands
                                   on p.BrandId equals b.BrandId
+                             join cus in context.Customers
+                                 on p.UserId equals cus.UserId
 
 
 
                              select new CarDetailDto
                              {
+                                 //Sol taraftaki CarDetailDto daki nesneler sağ taraftaki DB deki
                                  CarId = p.CarId,
                                  CategoryName = c.CategoryName,
                                  CarName = p.CarName,
@@ -41,6 +44,7 @@ namespace DataAccess.Concrete.EntityFramework
                                  BrandName = b.BrandName,
                                  ColorName = cl.ColorName,
                                  UnitsInStock = p.UnitsInStock,
+                                 CompanyName = cus.CompanyName,
                                  ImagePaths = (from img in context.CarImages
                                                where img.CarId == p.CarId
                                                select new CarImage
@@ -52,7 +56,12 @@ namespace DataAccess.Concrete.EntityFramework
                                                }).ToList()
 
                              };
-                return result.ToList();
+                
+                
+                //return result.ToList();   //120624 color ve brand filtresi için değişklik
+
+                return filter == null ? result.ToList() : result.Where(filter).ToList();
+
             }
         }
 
@@ -72,7 +81,9 @@ namespace DataAccess.Concrete.EntityFramework
                                 on car.ColorId equals color.ColorId
                              join brand in context.Brands
                                   on car.BrandId equals brand.BrandId
-                           
+                             join cus in context.Customers
+                                 on car.UserId equals cus.UserId
+
 
                              select new CarDetailDto
                              {
@@ -83,6 +94,7 @@ namespace DataAccess.Concrete.EntityFramework
                                  BrandName = brand.BrandName,
                                  ColorName = color.ColorName,
                                  UnitsInStock = car.UnitsInStock,
+                                 CompanyName = cus.CompanyName,
                                  ImagePaths = (from carImage in context.CarImages
                                                where carImage.CarId == car.CarId
                                                select new CarImage

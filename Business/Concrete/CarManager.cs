@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Business.Abstract;
 using Business.BusinessAspect.Autofac;
@@ -31,7 +32,7 @@ namespace Business.Concrete
         }
 
         [CacheAspect]
-       // [SecuredOperation("admin,employer")]
+        [SecuredOperation("admin,employer")]
         public IDataResult<List<Car>> GetAll()
         {
             //Adam mı ki erişecek? if else vs
@@ -44,7 +45,7 @@ namespace Business.Concrete
         }
        
        [CacheAspect]
-      // [SecuredOperation("admin,editor,employer")]
+       [SecuredOperation("admin,editor,employer")]
         public IDataResult<Car> GetById(int carId)
         {
             return new SuccessDataResult<Car>(_carDal.Get(p => p.CarId == carId),MessagesGet.CarListed);
@@ -55,12 +56,12 @@ namespace Business.Concrete
                                                  //ve bunlar key olacağı için hep küçük harf kullanıyorum
        // [TransactionScopeAspect]
 
-        public IResult AddCar(Car car)
+        public IResult AddCar(int currentUserId, Car car)
         {
         
 
             ValidationTool.Validate(new CarValidator(), car);
-
+            car.UserId = currentUserId;
             _carDal.Add(car);
             return new SuccessResult(MessagesAdd.CarAdded);
 
@@ -84,30 +85,51 @@ namespace Business.Concrete
             return new SuccessResult(MessagesDelete.CarDeleted);
         }
 
-        public IDataResult<List<Car>> GetByBrandId(int brandId)
+        public IDataResult<List<Car>> GetByBrandId(string brandId)
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(p => p.BrandId == brandId));
+            var brandIdList = brandId.Split(',').Select(int.Parse).ToList();
+            var cars = _carDal.GetAll(p => brandIdList.Contains(p.BrandId));
+            return new SuccessDataResult<List<Car>>(cars);
         }
 
         public IDataResult<List<Car>> GetByColorId(int colorId)
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(p => p.ColorId == colorId));
         }
-
+        [SecuredOperation("admin,editor,employer")]
         public IDataResult<List<CarDetailDto>> GetByCarDetailId(int carId)
         {
+            //burası full-stack taki gibi değişitirilebilir
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetByCarDetailId(carId));
         }
-
-     
-
-        // [SecuredOperation("admin,editor,employer")]
-        public IDataResult<List<CarDetailDto>> GetCarDetails()
+        [CacheAspect]
+        public IDataResult<List<Car>> GetCarsByBrandAndColor(int brandId, int colorId)
         {
-            
-            return new SuccessDataResult<List<CarDetailDto>>( _carDal.GetCarDetails());
+            List<Car> car = (_carDal.GetAll(c => c.BrandId == brandId && c.ColorId == colorId));
+
+            if (car == null)
+            {
+                return new ErrorDataResult<List<Car>>(MessagesGet.CarNotFound);
+            }
+
+            return new SuccessDataResult<List<Car>>(car);
+
         }
 
+
+        // [SecuredOperation("admin,editor,employer")]
+        public IDataResult<List<CarDetailDto>> GetCarDetails(int carId)
+        {
+
+            if (carId == 0) 
+            {
+                return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails());
+            }
+            else
+            {
+                return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(c => c.CarId == carId));
+            }
+        }
         public IDataResult<List<Car>> GetByCategoryId(int categoryId)
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(p => p.CategoryId == categoryId));

@@ -76,7 +76,6 @@ namespace Business.Concrete
             }
 
 
-            // rental.RentDate = DateTime.Now;
 
             _rentalDal.Add(rental);
             return new SuccessResult(MessagesAdd.RentSuccessful);
@@ -86,48 +85,9 @@ namespace Business.Concrete
         private IResult CheckReturnDate(Rental rental)
         {
 
-            //Bu OLMAZZZ
+          
 
-            //var rentalledCars = _rentalDal.GetAll(
-            //    r => r.CarId == rental.CarId && (
-            //        r.ReturnDate == null ||
-            //        r.ReturnDate < DateTime.Now)).Any();
-
-            //if (rentalledCars)
-            //{  return new ErrorResult(MessagesAdd.AlreadyRented);}
-
-            //return new SuccessResult();
-
-
-
-
-            //var result =
-            //    _rentalDal.GetRentalDetails(r => (r.CarId == rental.CarId && r.ReturnDate == null)
-            //                        || (r.RentDate >= rental.RentDate && r.ReturnDate >= rental.RentDate));
-
-            //if (result != null)
-            //{
-            //    return new ErrorResult(MessagesAdd.AlreadyRented);
-            //}
-            //return new SuccessResult();
-
-
-            //var resultList = _rentalDal.GetAll(r => r.CarId == rental.CarId).ToList();
-            //if (resultList.Count == 0)
-            //{
-            //    return new SuccessResult();
-            //}
-            //var result = resultList.Last()rental.ReturnDate != null ? true : false;
-            //if (result)
-            //{
-            //    return new SuccessResult();
-            //}
-            //return new ErrorResult(MessagesAdd.AlreadyRented);
-
-
-
-
-
+            //30.03.23
 
             var overlappingDateList = _rentalDal.GetAll(r => r.CarId == rental.CarId
                                                                        && r.RentDate < rental.ReturnDate
@@ -143,20 +103,12 @@ namespace Business.Concrete
             }
 
 
-            //var overlappingDateList =
-            //    _rentalDal.GetAll(r =>
-            //        (r.CarId == rental.CarId &&
-            //         (r.ReturnDate == null || r.RentDate < DateTime.Now))).Any();
-            //if (overlappingDateList)
-            //{
-            //    return new ErrorResult(MessagesAdd.AlreadyRented);
-            //}
-
-            //return new SuccessResult(/*MessagesAdd.RentSuccessful*/);
-
-
-
         }
+
+       
+
+
+
 
         [SecuredOperation("admin,editor")]
         [CacheRemoveAspect("IRentalService.Get")]

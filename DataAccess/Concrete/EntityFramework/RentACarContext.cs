@@ -17,7 +17,7 @@ namespace DataAccess.Concrete.EntityFramework
             //gibi biz dizilim olması gerekli
             /*optionsBuilder.UseSqlServer(@"Server=mfu.database.windows.net;Database=RentACar;uid=kul;pwd=Rahman99.");*/
 
-            optionsBuilder.UseSqlServer(@"Server=192.168.100.15;Database=RentACar;uid=mfu;pwd=1q2w3");
+            optionsBuilder.UseSqlServer(@"Server=10.20.30.15;Database=RentACar;uid=mfu;pwd=1q2w3");
         }
 
         public DbSet<Car> Cars { get; set; }
@@ -36,6 +36,12 @@ namespace DataAccess.Concrete.EntityFramework
 
         public DbSet<OperationClaim> OperationClaims { get; set; }
         public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
+
+        //20.05.2023
+
+        public  DbSet<CreditCard> CreditCards { get; set; }
+
+        
 
 
 

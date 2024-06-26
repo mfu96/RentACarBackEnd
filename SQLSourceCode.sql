@@ -16,7 +16,7 @@ CategoryId int,
 BrandId int,
 ColorId int,
 ModelYear int,
-UnitPrice deciaml(18),
+UnitPrice decimal(18),
 UnitsInStock smallint,
 Description nvarchar (Max),
 State nvarchar (Max),
@@ -67,14 +67,28 @@ select * from Colors
 
 
 --22.04.2021
-create table Users(
-UserId int identity (1,1) not null,
-FirstName nvarchar (MAX) not null,
-LastName nvarchar (Max)not null,
-Email nvarchar (MAX),
-Password nvarchar (max) not null,
-CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ([UserId] ASC)
-)
+-- create table Users(
+-- UserId int identity (1,1) not null,
+-- FirstName nvarchar (MAX) not null,
+-- LastName nvarchar (Max)not null,
+-- Email nvarchar (MAX),
+-- Password nvarchar (max) not null,
+-- CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ([UserId] ASC)
+-- )
+
+--23.07.2023
+
+CREATE TABLE [dbo].[Users] (
+    [UserId]       INT             IDENTITY (1, 1) NOT NULL,
+    [FirstName]    VARCHAR (50)    NOT NULL,
+    [LastName]     VARCHAR (50)    NOT NULL,
+    [Email]        VARCHAR (50)    NOT NULL,
+    [PasswordHash] VARBINARY (500) NOT NULL,
+    [PasswordSalt] VARBINARY (500) NOT NULL,
+    [Status]       BIT             NOT NULL,
+    CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ([UserId] ASC)
+);
+
 select * from Users
 
 
@@ -119,5 +133,34 @@ CONSTRAINT [PK_CarImages] PRIMARY KEY CLUSTERED ([ImageId] ASC)--,
 select * from CarImages
 
 --drop table CarImages
+
+
+--21.07.23
+
+CREATE TABLE [dbo].[UserOperationClaims] (
+    [Id]               INT IDENTITY (1, 1) NOT NULL,
+    [UserId]           INT NOT NULL,
+    [OperationClaimId] INT NOT NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC),
+   -- CONSTRAINT [fk_operationClaimId] FOREIGN KEY ([OperationClaimId]) REFERENCES [dbo].[OperationClaims] ([Id]),
+   -- CONSTRAINT [fk_userId] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([UserId]),
+    --FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([UserId])
+);
+
+select * from UserOperationClaims
+
+
+CREATE TABLE [dbo].[OperationClaims] (
+    [Id]   INT           IDENTITY (1, 1) NOT NULL,
+    [Name] VARCHAR (250) NOT NULL,
+	Constraint PK_OpetaionClaims Primary Key ([Id] asc)
+);
+
+select * from OperationClaims
+
+
+
+
+
 
  

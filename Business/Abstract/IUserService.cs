@@ -17,6 +17,8 @@ namespace Business.Abstract
         IResult UpdateUser(User user);
         IResult DeleteUser(User user);
         IDataResult<List<OperationClaim>> GetClaims(User user);
+        IDataResult<List<OperationClaim>> GetClaimsAll();
+
 
     }
 }

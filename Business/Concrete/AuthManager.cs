@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Transaction;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
@@ -44,27 +45,29 @@ namespace Business.Concrete
 
       }
 
+      [CacheRemoveAspect("IUserService.Get")]       //Kullanıcı ekledikten sonra projeyi kapatıp açmadan kullanıcı login olamaz Cache'den silmezsen
       public IDataResult<User> Login(UserForLoginDto userForLoginDto)
       {
-          var userToCheck = _userService.GetByMail(userForLoginDto.Email);
-          if (userToCheck== null)
+          var userToCheck = _userService.GetByMail(userForLoginDto.Email).Data;
+          if (userToCheck==null)
           {
               return new ErrorDataResult<User>(MessagesAuth.UserNotFound);
           }
-                    //Normalde Kullanıcı bulunamadı veya şifre bulunmadaı gibi hatalar direkt çıkmaması gerekir
-                    //fakat burası back-and olduğu için veritabanında ne oluyor direkt görmem lazım
-                    //Arayüz tarafında - yani dışarıya açık kısımda gerekli hata mesajlarının düznlenemesi gerekir
-    
+            //Normalde Kullanıcı bulunamadı veya şifre bulunmadaı gibi hatalar direkt çıkmaması gerekir
+            //fakat burası back-and olduğu için veritabanında ne oluyor direkt görmem lazım
+            //Arayüz tarafında - yani dışarıya açık kısımda gerekli hata mesajlarının düznlenemesi gerekir
 
-          if (!HashingHelper.VerifyPasswordHash(userForLoginDto.Password, userToCheck.Data.PasswordHash,userToCheck.Data.PasswordSalt))
-          {
-              return new ErrorDataResult<User>(MessagesAuth.PasswordError);
-          }
 
-          return new SuccessDataResult<User>(userToCheck.Data, MessagesAuth.SuccessfulLogin);
+           
+            if (!HashingHelper.VerifyPasswordHash(userForLoginDto.Password, userToCheck.PasswordHash, userToCheck.PasswordSalt))
+            {
+                return new ErrorDataResult<User>(MessagesAuth.PasswordError);
+            }
+
+            return new SuccessDataResult<User>(userToCheck);
       }
 
-      public IResult UserExists(string email)
+        public IResult UserExists(string email)
       {
           if (_userService.GetByMail(email).Data!=null)
           {
